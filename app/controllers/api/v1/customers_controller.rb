@@ -1,4 +1,7 @@
 class Api::V1::CustomersController < ApplicationController
+
+    before_action :validate_params_customer
+    
     def getCustomers
         @customers = Customer.where(status: 1)
         render json: @customers
@@ -7,22 +10,21 @@ class Api::V1::CustomersController < ApplicationController
 
     def getCustomerWithId
         #render json: [params[:id]]
-        @customer = Customer.find_by(id: params[:id], status:1)
+        @customer = Customer.find_by!(id:params[:id], status:1)
         render json: [@customer]
     end
-
     def addCustomer
-        Customer.create(id: params[:id],name: params[:name], age: params[:age])
+        Customer.create!(id: params[:id],name: params[:name], age: params[:age])
         render json: {message: "Success"}
     end
 
     def deleteCustomer
-        cust = Customer.find_by(id: params[:id])
-        cust.update(status: 0)
+        cust = Customer.find_by!(id: params[:id])
+        cust.update!(status: 0)
         render json: {message: "Success"}
     end
     def editCustomer
-        cust = Customer.find_by(id: params[:id], status: 1)
+        cust = Customer.find_by!(id: params[:id], status: 1)
         #p params[:data].to_unsafe_h.symbolize_keys
 
         @update_data = {}
@@ -40,7 +42,7 @@ class Api::V1::CustomersController < ApplicationController
                 end
         end
         if @update_data.length > 0
-            cust.update(@update_data)
+            cust.update!(@update_data)
         end
 
         render json: {message: "Success"}

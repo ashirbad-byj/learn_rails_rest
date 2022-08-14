@@ -16,17 +16,18 @@ class Api::V1::OrdersController < ApplicationController
     end
 
     def addOrder
-        Order.create(customer_id: params[:customer_id], item_id: params[:item_id], quantity: params[:quantity])
+        Order.create!(customer_id: params[:customer_id], item_id: params[:item_id], quantity: params[:quantity])
         render json: {message: "Success"}
     end
 
     def deleteOrder
-        @ord = Order.find_by(id: params[:id])
-        @ord.update(status: 0)
+        @ord = Order.find_by!(id: params[:id])
+        @ord.update!(status: 0)
         render json: {message: "Success"}
     end
+    
     def editOrder
-        ord = Order.find_by(id: params[:id],status: 1)
+        ord = Order.find_by!(id: params[:id],status: 1)
         #p params[:data].to_unsafe_h.symbolize_keys
         @update_data = {}
         params[:data].to_unsafe_h.symbolize_keys.each do |param|
@@ -45,7 +46,7 @@ class Api::V1::OrdersController < ApplicationController
                 end
         end
         if @update_data.length > 0
-            ord.update(@update_data)
+            ord.update!(@update_data)
         end
         render json: {message: "Success"}
     end
